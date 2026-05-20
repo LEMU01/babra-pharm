@@ -1,0 +1,30 @@
+
+
+ 
+<div class="edit">
+    <form method="POST">
+    <fieldset>
+        <legend>EDIT MEDICINE</legend>
+    <input type="text" name="jina" value="{{ dawa.jina }}" required>
+    <input type="number" name="idadi" value="{{ dawa.idadi }}" required>
+    <input type="number" name="bei" value="{{ dawa.bei }}" required>
+    <input type="date" name="tarehe" value="{{ dawa.tarehe_kuisha }}" required>
+
+    <button type="submit">Update</button>
+    <a href="{{ url_for('dashboard') }}">Back</a>
+    </fieldset>
+    
+</form>
+</div>
+
+<style>
+  .edit{
+    background-color: aquamarine;
+  }
+
+  a{
+   background-color: brown;
+   color: #ffffff;
+  }
+  
+</style>

@@ -1,0 +1,384 @@
+/* ---- MUONEKANO WA JUMLA ---- */
+body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f7f6;
+    color: #333;
+
+}
+
+/* Rangi na Variables */
+:root {
+    --bg-color: #f8f5f1;      /* Cream background */
+    --primary-teal: #4a90a2;  /* Teal color */
+    --white: #ffffff;
+    --sidebar-width: 260px;
+    --text-main: #334155;
+}
+
+body {
+    background-color: var(--bg-color);
+    margin: 0;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    color: var(--text-main);
+}
+
+.main-wrapper {
+    display: flex;
+}
+
+/* Sidebar Imetulia */
+.sidebar {
+    width: var(--sidebar-width);
+    background: rgb(6, 4, 107);
+    height: 100vh;
+    position: fixed;
+    border-right: 1px solid #e5e7eb;
+    padding: 20px;
+    box-sizing: border-box;
+}
+
+/* .sidebar-logo {
+    color: #ffffff;
+    font-weight: bold;
+    font-size: 1.3rem;
+    margin-bottom: 40px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+} */
+
+.sidebar-menu {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar-menu li a {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 15px;
+    text-decoration: none;
+    color: #ffffff;
+    border-radius: 12px;
+    margin-bottom: 5px;
+    transition: 0.3s;
+}
+
+.sidebar-menu li a:hover, .sidebar-menu li a.active {
+    background: #ffffff;
+    color: var(--primary-teal);
+}
+
+/* Main Content Area */
+.main-content {
+    flex: 1;
+    margin-left: var(--sidebar-width);
+    padding: 0;
+}
+
+.top-nav {
+    background: rgb(6, 4, 107);
+    padding: 15px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e5e7eb;
+    border: 2px;
+}
+
+.container {
+    padding: 30px 40px;
+}
+
+/* Kadi (White Cards) */
+.card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 25px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+    border: none;
+}
+
+/* Buttons & Inputs */
+.btn {
+    padding: 10px 20px;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+.btn-success { background: var(--primary-teal); color: white; }
+.btn-danger { background: #fee2e2; color: #991b1b; }
+
+input {
+    padding: 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    outline: none;
+}
+
+/* Table */
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th {
+    text-align: left;
+    padding: 15px;
+    color: #94a3b8;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+
+td {
+    padding: 15px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+ .containerp {
+    max-width: 1000px;
+    margin: 20px auto;
+    padding: 0 20px;
+}
+
+/* ---- MENYU YA JUU (NAVBAR) ---- */
+ .navbarp {
+    background-color: #0056b3;
+    color: white;
+    padding: 15px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+/* .navbar h2 { 
+    margin: 0;
+     font-size: 20px;
+     }
+.navbar a { 
+    text-decoration: none;
+     margin-left: 10px; 
+    } */ */ */
+
+/* ---- VIBOKSI (CARDS) ---- */
+.card {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+}
+.card h3 { 
+    margin-top: 0; 
+    color: #0056b3; 
+}
+
+/* ---- FOMU (FORMS) ---- */
+form { 
+    display: flex;
+     flex-wrap: wrap;
+      gap: 10px; 
+      align-items: center;
+     }
+.form-group {
+     display: flex; 
+     flex-direction: column;
+     }
+
+input {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+input:focus { border-color: #0056b3; outline: none; }
+
+/* ---- VITUFE (BUTTONS) ---- */
+.btn {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    color: white;
+    text-decoration: none;
+    display: inline-block;
+}
+.btn-primary { 
+    background-color: #0056b3;
+ }
+.btn-primary:hover {
+     background-color: #004494;
+     }
+.btn-success {
+     background-color: #28a745; 
+    }
+.btn-success:hover { 
+    background-color: #218838; 
+}
+.btn-danger { 
+    background-color: #dc3545;
+ }
+.btn-danger:hover { 
+    background-color: #c82333; 
+}
+.btn-warning { 
+    background-color: #ffc107;
+     color: black; }
+.btn-warning:hover { 
+    background-color: #e0a800; 
+}
+
+/* ---- JEDWALI (TABLE) ---- */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+}
+th, td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+th { background-color: #343a40; 
+    color: white; 
+}
+
+tr:hover { 
+    background-color: #f1f1f1; 
+}
+
+/* ---- ALERTS (Meseji) ---- */
+.alert { 
+    padding: 15px;
+     border-radius: 5px;
+      margin-bottom: 15px; 
+    }
+.alert-success { 
+    background-color: #d4edda;
+     color: #155724; 
+     border: 1px solid #c3e6cb;
+     }
+.alert-danger {
+     background-color: #f8d7da;
+      color: #721c24; 
+      border: 1px solid #f5c6cb;
+     }
+.alert-warning {
+     background-color: #fff3cd;
+      color: #856404; 
+      border: 1px solid #ffeeba;
+     }
+
+/* ---- UKURASA WA LOGIN ---- */
+/* ---- UKURASA WA LOGIN ---- */
+.login-body {
+    /* Hapa tunaita picha yako */
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('background.jpeg/ph.jpeg');
+    
+    
+    /* Hii inafanya picha ijae kioo chote bila kujirudia */
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+.login-card {
+  position: relative;
+  width: 400px; /* Unaweza kurekebisha upana hapa */
+  padding: 40px;
+  background: #0F172A; 
+  border-radius: 20px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column; /* HII NDIO SULUHISHO: Inapanga vitu kwenda chini badala ya pembeni */
+  align-items: center;    /* Inakaa katikati kushoto-kulia */
+  text-align: center;
+}
+
+/* Mng'ao wa njano (Usiubadilishe kama ulishakaa sawa) */
+.login-card::before {
+  content: '';
+  position: absolute;
+  width: 200px; /* Ongeza kidogo upana wa huu mwanga */
+  height: 200%;
+  background: linear-gradient(#ffff00, #ffff00);
+  top: -50%;
+  left: 25%; /* Ikae katikati kidogo */
+  transition: 0.5s;
+  z-index: 0;
+}
+
+.login-card:hover::before {
+  animation: animate 4s linear infinite;
+}
+
+@keyframes animate {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Background ya ndani inayofunika mwanga */
+.login-card::after {
+  content: '';
+  position: absolute;
+  inset: 4px; 
+  background: #0F172A; 
+  border-radius: 16px;
+  z-index: 1; /* Inakaa juu ya 'before' lakini chini ya maudhui */
+}
+
+/* HII NI MUHIMU SANA: Inahakikisha maudhui yote yanatokea juu ya mng'ao */
+.login-card > * {
+  position: relative;
+  z-index: 2;
+  width: 100%; /* Inahakikisha input fields zinajaa upana wa kadi */
+}
+
+.login-card:hover{
+    color: rgb(15, 11, 245);
+}
+.login-card { 
+    width: 350px;
+    background: #1A365D;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+     }
+.login-card form { 
+    display: flex;
+     flex-direction: column; 
+     width: 100%; 
+     border-radius: 10PX;
+    }
+.login-card input {
+     width: 93%; 
+     margin-bottom: 15px; 
+    }
+
+    label{
+        color: #F1F5F9;
+    }
+.badge-warning {
+     background: #ffc107;
+      color: black;
+       padding: 3px 8px; 
+       border-radius: 12px;
+        font-size: 12px;
+     }
+.badge-info { 
+    background: #17a2b8;
+     color: white;
+      padding: 3px 8px; 
+      border-radius: 12px;
+       font-size: 12px; 
+    }
