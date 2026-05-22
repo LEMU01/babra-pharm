@@ -1,192 +1,188 @@
-/* GENERAL RESET */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+/* ---- VARIABLES NA RANGI ---- */
+:root {
+    --bg-color: #f8f5f1;      
+    --primary-blue: rgb(6, 4, 107); 
+    --primary-teal: #4a90a2;  
+    --white: #ffffff;
+    --sidebar-width: 260px;
+    --text-main: #ffffff;
+    --success-green: #28a745;
+    --danger-red: #dc3545;
 }
 
 body {
+    background-color: var(--bg-color);
+    margin: 0;
+    font-family: 'Inter', 'Segoe UI', sans-serif;
+    color: var(--text-main);
     display: flex;
-    background: #f4f6f9;
-    color: #333;
-    min-height: 100vh;
 }
 
-/* SIDEBAR LAYOUT */
+.dashboard1 {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('background.jpeg/ph.jpeg');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: 100vh;
+    width: 100%;
+}
+
+.btn-danger:hover {
+    background-color: darkred;
+    color: white;
+}
+
+button:hover {
+    background-color: #0e7ce9;
+    color: #ffffff;
+}
+
+.btn1 {
+    background-color: #007bff; 
+    color: white;
+    padding: 1px 2px;
+    border-radius: 10px;
+    display: inline-block;
+}
+
+.btn1:hover {
+    background-color: #f1f5f9;
+    color: #007bff;
+}
+
+.n {
+    margin-bottom: 3px;
+    display: flex;
+    background-color: #28a745;
+    border-radius: 10px;
+    justify-content: center;
+    box-shadow: 0 4px 15px rgba(255, 255, 0, 0.3);
+}
+
+/* ---- SIDEBAR ---- */
 .sidebar {
-    width: 260px;
-    background-color: #1e293b;
-    color: #fff;
-    padding: 20px;
-    position: fixed;
+    width: var(--sidebar-width);
+    background: var(--primary-blue);
+    box-shadow: 0 4px 15px rgba(236, 9, 9, 0.753);
     height: 100vh;
-    overflow-y: auto;
-    z-index: 100;
+    position: fixed;
+    padding: 20px;
+    box-sizing: border-box;
+    border-right: 1px solid #e5e7eb;
 }
 
 .logo-wrapper {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
+    padding: 10px 0;
     margin-bottom: 30px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #334155;
 }
 
 .pharmacy-logo {
-    width: 40px;
-    height: 40px;
+    width: 70px; 
+    height: 70px;
     object-fit: cover;
-    border-radius: 50%;
+    border-radius: 8px;
 }
 
 .brand-text {
     font-size: 1.1rem;
-    font-weight: bold;
-    letter-spacing: 1px;
+    font-weight: 700;
+    color: white;
+    letter-spacing: 0.5px;
 }
 
 .sidebar-menu {
     list-style: none;
+    padding: 0;
 }
 
-.sidebar-menu li {
-    margin-bottom: 8px;
-}
-
-.sidebar-menu a {
+.sidebar-menu li a {
     display: block;
-    color: #cbd5e1;
+    padding: 12px 20px;
+    color: white;
     text-decoration: none;
-    padding: 12px 15px;
-    border-radius: 6px;
-    transition: all 0.3s ease;
+    border-radius: 10px;
+    transition: 0.3s;
 }
 
-.sidebar-menu a:hover, .sidebar-menu a.active {
-    background-color: #0284c7;
-    color: #fff;
+.sidebar-menu li a:hover {
+    background: rgba(255,255,255,0.1);
+    transform: translateX(5px);
+    box-shadow: 0 0 10px cyan, 0 0 20px cyan;
 }
 
-/* MAIN CONTENT */
+/* ---- MAIN CONTENT AREA ---- */
 .main-content {
-    margin-left: 260px;
     flex: 1;
-    padding: 20px;
+    margin-left: var(--sidebar-width);
+    padding: 0;
+    width: calc(100% - var(--sidebar-width));
 }
 
-/* NAVIGATION BAR */
 .top-nav {
+    background: var(--primary-blue);
+    box-shadow: 0 4px 15px rgba(236, 9, 9, 0.753);
+    padding: 15px 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #fff;
-    padding: 15px 25px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-    margin-bottom: 25px;
+    color: white;
 }
 
-.system-title {
-    margin: 0;
-    font-size: 1.2rem;
-    color: #1e293b;
-}
-
-.top-nav-right {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.user-admin {
-    font-weight: bold;
-}
-
-/* CARDS CONFIGURATION */
 .container {
-    max-width: 1200px;
-    margin: 0 auto;
+    padding: 30px 40px;
 }
 
+/* ---- KADI (WHITE CARDS) ---- */
 .card {
-    background: #fff;
+    background: var(--primary-blue);
+    border-radius: 20px;
     padding: 25px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
     margin-bottom: 25px;
+    border: none;
 }
 
 .card h3 {
-    margin-bottom: 15px;
+    margin-top: 0;
+    color: var(--white);
     font-size: 1.1rem;
-    color: #1e293b;
+    margin-bottom: 20px;
 }
 
-/* FORM ELEMENTS */
-.form-responsive {
+/* ---- INPUTS NA BUTTONS ---- */
+form {
     display: flex;
-    gap: 12px;
     flex-wrap: wrap;
+    gap: 10px;
     align-items: center;
 }
 
-.input-field {
-    padding: 10px 15px;
-    border: 1px solid #cbd5e1;
-    border-radius: 6px;
-    font-size: 0.95rem;
+input {
+    padding: 12px;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
     outline: none;
-    height: 42px;
+    font-size: 14px;
+    color: #333;
 }
 
-.input-field:focus {
-    border-color: #0284c7;
-}
-
-.flex-2 { flex: 2; min-width: 180px; }
-.flex-1 { flex: 1; min-width: 130px; }
-.flex-0-5 { flex: 0.5; min-width: 70px; }
-.flex-grow { flex: 1; min-width: 200px; }
-
-.search-buttons {
-    display: flex;
-    gap: 8px;
-}
-
-/* BUTTONS SYSTEM */
 .btn {
     padding: 10px 20px;
+    border-radius: 10px;
     border: none;
-    border-radius: 6px;
     cursor: pointer;
     font-weight: 600;
-    font-size: 0.95rem;
     text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    height: 42px;
-}
-
-.btn-success { background: #10b981; color: white; }
-.btn-primary { background: #0284c7; color: white; }
-.btn-danger { background: #ef4444; color: white; }
-.btn-leave { background: #ef4444; color: white; }
-
-.btn2 {
-    background: #3b82f6;
-    color: white;
-    padding: 8px 15px;
-    border-radius: 4px;
-    text-decoration: none;
-    font-size: 0.9rem;
-    font-weight: 500;
     display: inline-block;
 }
 
-/* TABLE RESPONSIBILITIES */
+.btn-success { background: var(--success-green); color: white; padding: 10px 20px; }
+.btn-primary { background: #28a745; color: white; }
+.btn-danger { background: var(--danger-red); color: white; }
+
+/* ---- JEDWALI (TABLE) ---- */
 .table-container {
     width: 100%;
     overflow-x: auto;
@@ -196,89 +192,163 @@ body {
 table {
     width: 100%;
     border-collapse: collapse;
-}
-
-th, td {
-    padding: 12px 15px;
-    text-align: left;
-    border-bottom: 1px solid #e2e8f0;
-    font-size: 0.95rem;
-    white-space: nowrap; /* Inazuia herufi za jedwali kujikunja ovyo */
+    table-layout: auto;
 }
 
 th {
-    background-color: #f8fafc;
-    color: #475569;
-    font-weight: 600;
+    text-align: left;
+    padding: 15px;
+    background-color: #28a745;
+    border-radius: 10px;
+    color: white;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+
+td {
+    padding: 12px 15px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+tr {
+    font-size: 0.8rem;
+}
+
+tr:hover { 
+    background-color: #0e022b; 
 }
 
 .price-text {
-    font-weight: 600;
-    color: #0f766e;
+    color: var(--success-green);
+    font-weight: bold;
 }
 
-/* TABLE ACTIONS LAYOUT */
-.action-wrapper {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    flex-wrap: wrap;
-}
-
-.form-sale {
-    display: flex;
-    gap: 5px;
-    align-items: center;
-}
-
-.input-sale-qty {
-    width: 65px;
-    padding: 8px;
-    border: 1px solid #cbd5e1;
-    border-radius: 4px;
-    height: 35px;
-}
-
-.btn-sale {
-    background: #f59e0b;
-    color: white;
-    border: none;
-    padding: 0 12px;
-    border-radius: 4px;
-    cursor: pointer;
-    height: 35px;
-    font-weight: 600;
-}
-
-.crud-buttons {
-    display: flex;
-    gap: 6px;
-    align-items: center;
-}
-
-.crud-buttons .btn-danger {
-    padding: 8px 15px;
-    height: auto;
-    font-size: 0.9rem;
-}
-
-.no-data {
-    text-align: center;
-    color: #64748b;
-    padding: 30px;
-}
-
+/* ---- ALERTS ---- */
 .alert {
-    padding: 12px;
-    border-radius: 6px;
-    margin-bottom: 20px;
+    padding: 15px;
+    border-radius: 10px;
+    margin-bottom: 15px;
 }
-.alert-success { background: #d1e7dd; color: #0f5132; }
-.alert-danger { background: #f8d7da; color: #842029; }
+.alert-success { background-color: #d4edda; color: #155724; }
 
-/* ===================================================
-   MEDIA QUERY: INABADILISHA MUONEKANO KWENYE SIMU
-   =================================================== */
+/* CARD SPECIALS */
+.card {
+    position: relative;
+    overflow: hidden;
+    z-index: 1;
+}
+
+.card::before {
+    content: "";
+    position: absolute;
+    inset: -3px;
+    background: conic-gradient(#ff0000, yellow, #ff00ff, yellow, #ff0000);
+    border-radius: 22px;
+    animation: spin 60s linear infinite;
+    z-index: -10;
+}
+
+.card::after {
+    content: "";
+    position: absolute;
+    inset: 3px;
+    background: var(--primary-blue);
+    border-radius: 18px;
+    z-index: -1;
+}
+
+@keyframes spin { 100% { transform: rotate(360deg); } }
+
+/* SIDEBAR GLOW EXTENSIONS */
+.sidebar {
+    left: 0;
+    top: 0;
+    background: linear-gradient(180deg, #0f172a, #111827, #1e293b);
+    overflow: hidden;
+    z-index: 1;
+    box-shadow: 0 0 20px rgba(0,255,255,0.3), 0 0 40px rgba(0,255,255,0.2);
+    animation: sidebarGlow 5s ease-in-out infinite;
+}
+
+.sidebar::before {
+    content: "";
+    position: absolute;
+    width: 300%;
+    height: 300%;
+    top: -100%;
+    left: -100%;
+    background: conic-gradient(transparent, rgba(0,255,255,0.4), transparent, rgba(255,0,255,0.4), transparent);
+    animation: rotateLight 8s linear infinite;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.sidebar * { position: relative; z-index: 2; }
+
+.top-nav {
+    height: 70px;
+    background: linear-gradient(90deg, var(--primary-blue), var(--primary-blue), var(--primary-blue));
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 15px rgba(0,255,255,0.2), 0 0 35px rgba(255,0,255,0.2);
+    animation: navGlow 4s ease-in-out infinite;
+}
+
+.top-nav::before {
+    content: "";
+    position: absolute;
+    width: 250%;
+    height: 250%;
+    top: -80%;
+    left: -80%;
+    background: conic-gradient(transparent, rgba(0,255,255,0.4), transparent, rgba(255,0,255,0.4), transparent);
+    animation: rotateLight 10s linear infinite;
+}
+
+@keyframes sidebarGlow {
+    0%, 100% { box-shadow: 0 0 15px rgba(0,255,255,0.2), 0 0 30px rgba(255,0,255,0.2); }
+    50% { box-shadow: 0 0 30px rgba(0,255,255,0.5), 0 0 60px rgba(255,0,255,0.4); }
+}
+@keyframes navGlow { 0%, 100% { filter: brightness(1); } 50% { filter: brightness(1.2); } }
+@keyframes rotateLight { 100% { transform: rotate(360deg); } }
+
+/* MODALS & GENERALS */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 999;
+    left: 0; top: 0; width: 100%; height: 100%;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(5px);
+}
+
+.modal-content {
+    background: #111; width: 350px; margin: 10% auto; padding: 25px; border-radius: 15px;
+    display: flex; flex-direction: column; gap: 10px; color: white; animation: popUp 0.3s ease;
+}
+
+.edit-btn {
+    background: gold; color: black; border: none; padding: 8px 12px; border-radius: 8px;
+    cursor: pointer; margin-right: 5px; font-weight: bold;
+}
+.edit-btn:hover { transform: scale(1.05); }
+@keyframes popUp { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+.btn2 {
+    background-color: #1e293b; color: white; padding: 8px 14px; min-width: max-content;
+    white-space: nowrap; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;
+    text-decoration: none; display: inline-block;
+}
+
+tbody tr { transition: 0.3s ease; }
+tbody tr:hover { transform: scale(1.01); }
+
+/* ====================================================
+   MABORESHO YA MSINGI KWA AJILI YA SIMU (RESPONSIVE)
+   ==================================================== */
 @media (max-width: 768px) {
     body {
         flex-direction: column;
@@ -289,11 +359,11 @@ th {
         width: 100%;
         height: auto;
         padding: 15px;
+        box-shadow: 0 4px 10px rgba(0,255,255,0.2);
     }
 
     .logo-wrapper {
         margin-bottom: 15px;
-        padding-bottom: 10px;
         justify-content: center;
     }
 
@@ -304,66 +374,54 @@ th {
         gap: 8px;
     }
 
-    .sidebar-menu li {
-        margin-bottom: 0;
-    }
-
-    .sidebar-menu a {
+    .sidebar-menu li a {
         padding: 8px 12px;
         font-size: 0.85rem;
     }
 
     .main-content {
         margin-left: 0;
-        padding: 15px;
+        width: 100%;
     }
 
     .top-nav {
+        padding: 15px 20px;
         flex-direction: column;
-        gap: 12px;
+        gap: 10px;
+        height: auto;
         align-items: flex-start;
+    }
+
+    .top-nav div {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .container {
         padding: 15px;
     }
 
-    .system-title {
-        font-size: 1.05rem;
-    }
-
-    .top-nav-right {
-        width: 100%;
-        justify-content: space-between;
-    }
-
-    .form-responsive {
+    form {
         flex-direction: column;
         align-items: stretch;
     }
 
-    .input-field, .btn, .search-buttons, .search-buttons .btn {
-        width: 100%;
+    form input, form button, form a {
+        width: 100% !important;
+        flex: none !important;
     }
 
-    .action-wrapper {
+    .b {
         flex-direction: column;
         align-items: stretch;
-        gap: 8px;
+        gap: 5px;
     }
 
-    .form-sale {
-        width: 100%;
+    .b form {
+        flex-direction: row !important;
     }
 
-    .input-sale-qty {
-        flex: 1;
-    }
-
-    .crud-buttons {
-        width: 100%;
-        justify-content: space-between;
-    }
-
-    .crud-buttons a {
-        flex: 1;
-        text-align: center;
+    .b form input {
+        width: 60px !important;
     }
 }
