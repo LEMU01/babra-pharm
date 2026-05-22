@@ -6,7 +6,7 @@ import os
 app = Flask(__name__)
 app.secret_key = "siri_nzito_sana"
 
-# URI thabiti inayotumia Python 3.11 sasa hivi bila shida
+# URI yetu thabiti ya Supabase inayotumia dereva wa pg8000
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+pg8000://postgres.ltfzabxpwnxkuiwyomjv:Lemu1234#567@aws-0-eu-west-1.pooler.supabase.com:6543/postgres'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -141,6 +141,13 @@ def uza_dawa():
         
     cursor.close()
     conn.close()
+    return redirect(url_for('dashboard'))
+
+# HII NDIO NJIA YA 'report' ILIYOKUWA INATAFUTWA NA DASHBOARD YAKO KUTOKANA NA ERROR
+@app.route('/report')
+def report():
+    if 'mtumiaji' not in session:
+        return redirect(url_for('login'))
     return redirect(url_for('dashboard'))
 
 @app.route('/logout')
