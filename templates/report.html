@@ -1,50 +1,205 @@
 <!DOCTYPE html>
 <html lang="sw">
 <head>
-    <title>Ripoti - Duka la Dawa</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sales Report - Babrah Pharmacy</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
-    <div class="navbarp">
-        <h2>📊 SALES HISTORY</h2>
-        <a href="dashboard" class="btn btn-warning">⬅️ Back</a>
+
+<body class="dashboard1">
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+
+        <div class="logo-wrapper">
+            <img src="{{ url_for('static', filename='logo.png') }}" class="pharmacy-logo">
+            <span class="brand-text">BABRAH PHARMACY</span>
+        </div>
+
+        <ul class="sidebar-menu">
+            <li>
+                <a href="{{ url_for('dashboard') }}">
+                    🏠 Dashboard
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ url_for('report') }}" class="active">
+                    📊 Reports
+                </a>
+            </li>
+
+            <li>
+                <a href="{{ url_for('logout') }}">
+                    🚪 Logout
+                </a>
+            </li>
+        </ul>
+
     </div>
 
-    <div class="container">
-        <div class="card">
-            <h3 style="color: #28a745;">Grand Total Sales: <b>{{ jumla_kuu }} TZS</b></h3>
+    <!-- MAIN CONTENT -->
+    <div class="main-content">
 
-            <table>
-                <thead>
-                    <tr>
-                        <th>Sold Medicine</th><th>Quantity</th><th>Amount Received</th><th>Date & Time</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for m in mauzo %}
-                    <tr>
-                        <td>{{ m.jina_dawa }}</td>
-                        <td>{{ m.idadi_iliyouzwa }}</td>
-                        <td style="color: green; font-weight: bold;">{{ m.jumla_pesa }} TZS</td>
-                        <td>{{ m.tarehe }}</td>
-                    </tr>
+        <!-- TOP NAV -->
+        <div class="top-nav">
+
+            <h2>
+                📊 SALES HISTORY REPORT
+            </h2>
+
+            <a href="{{ url_for('dashboard') }}"
+               class="btn btn-primary">
+                ⬅ Back Dashboard
+            </a>
+
+        </div>
+
+        <!-- CONTAINER -->
+        <div class="container">
+
+            <!-- FLASH MESSAGES -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+
+                    {% for category, message in messages %}
+
+                        <div class="alert alert-{{ category }}">
+                            {{ message }}
+                        </div>
+
                     {% endfor %}
-                </tbody>
-            </table>
 
-       <div class="card" style="border: 1px solid #ffc107;">
-                <h3 style="color: #dc3545;">⚠️ DANGER (Admin Only)</h3>
-                <p>Enter the admin passkey to delete sales history:</p>
-    
-            <form action="/futa_mauzo_yote" method="POST" style="display: flex; gap: 10px;">
-            <input type="password" name="password_futa" placeholder="Enter a passkey" required style="width: 250px;">
-             <button type="submit" class="btn btn-danger" onclick="return confirm('Are you sure you want to proceed? Sales can not be restored! ');">
-            🗑️ Delete All History
-             </button>
-              </form>
+                {% endif %}
+            {% endwith %}
+
+            <!-- TOTAL SALES -->
+            <div class="card">
+
+                <h3>
+                    💰 GRAND TOTAL SALES:
+                    <span style="color:#22c55e;">
+                        {{ jumla_kuu }} TZS
+                    </span>
+                </h3>
+
+            </div>
+
+            <!-- SALES TABLE -->
+            <div class="card">
+
+                <h3>
+                    📋 SALES RECORDS
+                </h3>
+
+                <div class="table-container">
+
+                    <table>
+
+                        <thead>
+
+                            <tr>
+                                <th>#</th>
+                                <th>Medicine</th>
+                                <th>Quantity</th>
+                                <th>Amount</th>
+                                <th>Date & Time</th>
+                            </tr>
+
+                        </thead>
+
+                        <tbody>
+
+                            {% for m in mauzo %}
+
+                            <tr>
+
+                                <td>
+                                    {{ loop.index }}
+                                </td>
+
+                                <td>
+                                    <strong>{{ m[0] }}</strong>
+                                </td>
+
+                                <td>
+                                    {{ m[1] }}
+                                </td>
+
+                                <td class="price-text">
+                                    {{ m[2] }} TZS
+                                </td>
+
+                                <td>
+                                    {{ m[3] }}
+                                </td>
+
+                            </tr>
+
+                            {% else %}
+
+                            <tr>
+
+                                <td colspan="5"
+                                    style="text-align:center; padding:25px;">
+
+                                    No sales history found.
+
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+
+                    </table>
+
+                </div>
+
+            </div>
+
+            <!-- DANGER ZONE -->
+            <div class="card"
+                 style="border:1px solid rgba(255,0,0,.4);">
+
+                <h3 style="color:#ef4444;">
+                    ⚠️ DANGER ZONE
+                </h3>
+
+                <p style="margin-bottom:15px;">
+                    Enter admin passkey to delete all sales history.
+                </p>
+
+                <form action="{{ url_for('futa_mauzo_yote') }}"
+                      method="POST">
+
+                    <input type="password"
+                           name="password_futa"
+                           placeholder="Enter admin passkey"
+                           required>
+
+                    <button type="submit"
+                            class="btn btn-danger"
+
+                            onclick="return confirm(
+                            'Are you sure? This action cannot be undone!'
+                            );">
+
+                        🗑 Delete All History
+
+                    </button>
+
+                </form>
+
+            </div>
+
         </div>
 
-        </div>
     </div>
+
 </body>
 </html>

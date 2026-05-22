@@ -1,30 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Edit Medicine</title>
+</head>
+<body>
 
-
- 
 <div class="edit">
-    <form method="POST">
-    <fieldset>
-        <legend>EDIT MEDICINE</legend>
-    <input type="text" name="jina" value="{{ dawa.jina }}" required>
-    <input type="number" name="idadi" value="{{ dawa.idadi }}" required>
-    <input type="number" name="bei" value="{{ dawa.bei }}" required>
-    <input type="date" name="tarehe" value="{{ dawa.tarehe_kuisha }}" required>
 
-    <button type="submit">Update</button>
-    <a href="{{ url_for('dashboard') }}">Back</a>
-    </fieldset>
-    
+<form method="POST">
+
+<h2>EDIT MEDICINE</h2>
+
+<input type="text" name="jina" value="{{ dawa[1] }}" required>
+
+<input type="number" name="idadi" value="{{ dawa[2] }}" required>
+
+<input type="number" name="bei" value="{{ dawa[3] }}" required>
+
+<input type="date" name="tarehe" value="{{ dawa[4] }}" required>
+
+<button type="submit">Update</button>
+
+<a href="{{ url_for('dashboard') }}">Back</a>
+
 </form>
+
 </div>
 
-<style>
-  .edit{
-    background-color: aquamarine;
-  }
-
-  a{
-   background-color: brown;
-   color: #ffffff;
-  }
-  
-</style>
+</body>
+</html>
