@@ -120,7 +120,7 @@ def ongeza():
     return ongeza_dawa()
 
 @app.route('/uza', methods=['POST'])
-def uza_dawa():
+def uza():
     if 'mtumiaji' not in session:
         return redirect(url_for('login'))
         
