@@ -7,7 +7,7 @@ app = Flask(__name__)
 app.secret_key = "siri_nzito_sana"
 
 # URI thabiti inayotumia Python 3.11 sasa hivi bila shida
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres.ltfzabxpwnxkuiwyomjv:Lemu1234#567@aws-0-eu-west-1.pooler.supabase.com:6543/postgres'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+pg8000://postgres.ltfzabxpwnxkuiwyomjv:Lemu1234#567@aws-0-eu-west-1.pooler.supabase.com:6543/postgres'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
