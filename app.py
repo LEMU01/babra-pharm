@@ -115,7 +115,7 @@ def ongeza_dawa():
     return redirect(url_for('dashboard'))
 
 # Hapa tunatengeneza jina la 'ongeza' ambalo HTML yako inalililia, ili liiite kazi ileile ya juu
-@app.route('/ongeza', methods=['POST'])
+@app.route('/ongeza_dawa', methods=['POST'])
 def ongeza():
     return ongeza_dawa()
 

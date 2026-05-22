@@ -46,7 +46,7 @@
             <div class="card">
                 <div class="n"><h3>➕ ADD NEW MEDICINE</h3></div>
                 
-                <form action="{{ url_for('ongeza') }}" method="POST">
+                <form action="{{ url_for('ongeza_dawa') }}" method="POST">
                     <input type="text" name="jina" placeholder="Medicine name" required style="flex: 2;">
                     <input type="number" name="idadi" placeholder="Qty" required style="flex: 0.5;">
                     <input type="number" name="bei" placeholder="Price (TZS)" required style="flex: 1;">
@@ -89,7 +89,7 @@
                                 <td>{{ d[4] }}</td>
                                 <td>
                                     <div class="b" style="display: flex; gap: 8px; flex-wrap: nowrap;">
-                                        <form action="{{ url_for('uza') }}" method="POST" style="display: flex; gap: 5px; margin: 0;">
+                                        <form action="{{ url_for('uza_dawa') }}" method="POST" style="display: flex; gap: 5px; margin: 0;">
                                             <input type="hidden" name="dawayao_id" value="{{ d[0] }}">
                                             <input type="number" name="idadi" placeholder="Qty" style="width: 60px; padding: 5px;" required>
                                             <div class="btn1"><button type="submit" class="btn" style="padding: 5px 10px; font-size: 0.8rem;">Sale</button></div>
