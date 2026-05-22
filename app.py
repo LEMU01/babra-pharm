@@ -6,7 +6,7 @@ import os
 app = Flask(__name__)
 app.secret_key = "siri_nzito_sana"
 
-# URI yetu thabiti ya Supabase inayotumia dereva wa pg8000
+# URI thabiti ya Supabase kwa kutumia dereva wa pg8000
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql+pg8000://postgres.ltfzabxpwnxkuiwyomjv:Lemu1234#567@aws-0-eu-west-1.pooler.supabase.com:6543/postgres'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -93,7 +93,9 @@ def dashboard():
     except Exception as e:
         return f"Ushonaji wa data umefeli: {e}"
 
+# TUMEWEKA ROUTE MBILI ILI HATA HTML IKIITA 'ongeza' AU 'ongeza_dawa' ISIFELI!
 @app.route('/ongeza_dawa', methods=['POST'])
+@app.route('/ongeza', methods=['POST'])
 def ongeza_dawa():
     if 'mtumiaji' not in session:
         return redirect(url_for('login'))
@@ -113,7 +115,9 @@ def ongeza_dawa():
     flash("Dawa imeongezwa kikamilifu!", "success")
     return redirect(url_for('dashboard'))
 
+# TUMEWEKA ROUTE MBILI PIA KWA AJILI YA KUUZA DAWA ILI KULINDA USALAMA
 @app.route('/uza_dawa', methods=['POST'])
+@app.route('/uza', methods=['POST'])
 def uza_dawa():
     if 'mtumiaji' not in session:
         return redirect(url_for('login'))
@@ -143,14 +147,17 @@ def uza_dawa():
     conn.close()
     return redirect(url_for('dashboard'))
 
-# HII NDIO NJIA YA 'report' ILIYOKUWA INATAFUTWA NA DASHBOARD YAKO KUTOKANA NA ERROR
+# ROUTE MBILI KWA AJILI YA RIPOTI
 @app.route('/report')
+@app.route('/ripoti')
 def report():
     if 'mtumiaji' not in session:
         return redirect(url_for('login'))
     return redirect(url_for('dashboard'))
 
+# ROUTE MBILI KWA AJILI YA LOGOUT
 @app.route('/logout')
+@app.route('/ondoka')
 def logout():
     session.pop('mtumiaji', None)
     return redirect(url_for('login'))
