@@ -5,159 +5,138 @@ from datetime import datetime
 app = Flask(__name__)
 app.secret_key = "siri_nzito_sana"
 
-# BANDIKA ILE URI ULIYOCOPY HAPA
-# Hakikisha unafuta neno [YOUR-PASSWORD] na kuweka ile password halisi ya babra-db uliyoweka mwanzo
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:Lemu123@456@db.ltfzabxpwnxkuiwyomjv.supabase.co:5432/postgres'
+# 1. BANDIKA URI YAKO HALISI HAPA (Weka password yako ya Supabase hapo katikati)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:Lemu1234#567@db.ltfzabxpwnxkuiwyomjv.supabase.co:5432/postgres'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-# Inazuia kubadilisha kodi zako zote za chini zinazotumia cursor.execute
 def unganisha_db():
     return db.engine.raw_connection()
 
-# 2. Ukurasa wa Login
+# Kazi ya kutengeneza meza kwenye Supabase kiotomatiki zikiwa hazipo
+with app.app_context():
+    conn = unganisha_db()
+    cursor = conn.cursor()
+    cursor.execute('''CREATE TABLE IF NOT EXISTS dwa (
+                        id SERIAL PRIMARY KEY, 
+                        jina TEXT, 
+                        idadi INTEGER, 
+                        bei INTEGER, 
+                        tarehe TEXT)''')
+    cursor.execute('''CREATE TABLE IF NOT EXISTS mauzo (
+                        id SERIAL PRIMARY KEY, 
+                        dawa_id INTEGER, 
+                        idadi INTEGER, 
+                        jumla INTEGER, 
+                        tarehe TEXT)''')
+    cursor.execute('''CREATE TABLE IF NOT EXISTS watumiaji (
+                        id SERIAL PRIMARY KEY, 
+                        jina TEXT UNIQUE, 
+                        nywila TEXT)''')
+    
+    # Kuongeza admin wa majaribio kama hayopo
+    cursor.execute("SELECT * FROM watumiaji WHERE jina = %s", ('admin',))
+    if not cursor.fetchone():
+        cursor.execute("INSERT INTO watumiaji (jina, nywila) VALUES (%s, %s)", ('admin', 'admin123'))
+    conn.commit()
+    cursor.close()
+    conn.close()
+
 @app.route('/', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         jina = request.form['jina']
         nywila = request.form['nywila']
+        
         conn = unganisha_db()
-        mtumiaji = conn.execute("SELECT * FROM watumiaji WHERE jina=? AND nywila=?", (jina, nywila)).fetchone()
+        cursor = conn.cursor()
+        # Tumebadilisha ? kuwa %s kwa ajili ya PostgreSQL
+        cursor.execute("SELECT * FROM watumiaji WHERE jina = %s AND nywila = %s", (jina, nywila))
+        mtumiaji = cursor.fetchone()
+        cursor.close()
+        conn.close()
+        
         if mtumiaji:
-            session['loggedin'] = True
-            session['jina'] = jina
+            session['mtumiaji'] = jina
             return redirect(url_for('dashboard'))
         else:
-            flash("Jina au Nywila si sahihi!", "danger")
+            flash("Jina au nywila si sahihi!", "danger")
+            return redirect(url_for('login'))
+            
     return render_template('login.html')
-
-
-    return redirect(url_for('dashboard'))
-# 3. Ukurasa Mkuu (Dashboard)
-
 
 @app.route('/dashboard')
 def dashboard():
-    if not session.get('loggedin'):
+    if 'mtumiaji' not in session:
         return redirect(url_for('login'))
-    
-    # Chukua neno la kutafuta kama lipo
-    search_query = request.args.get('search', '')
-    
-    conn = unganisha_db()
-    if search_query:
-        # Tafuta dawa inayofanana na neno lililoandikwa
-        hoja = "SELECT * FROM dawa WHERE jina LIKE ? ORDER BY id DESC"
-        dawa_zote = conn.execute(hoja, ('%' + search_query + '%',)).fetchall()
-    else:
-        # Kama hakuna search, onyesha zote kama kawaida
-        dawa_zote = conn.execute("SELECT * FROM dawa ORDER BY id DESC").fetchall()
-    
-    return render_template('dashboard.html', dawa=dawa_zote, search_query=search_query, leo=datetime.now().date())
-
-@app.route('/edit/<int:id>', methods=['GET', 'POST'])
-def edit(id):
-    conn = unganisha_db()
-    dawa = conn.execute("SELECT * FROM dawa WHERE id=?", (id,)).fetchone()
-
-    if request.method == 'POST':
-        jina = request.form['jina']
-        idadi = request.form['idadi']
-        bei = request.form['bei']
-        tarehe = request.form['tarehe']
-
-        conn.execute("""
-            UPDATE dawa 
-            SET jina=?, idadi=?, bei=?, tarehe_kuisha=? 
-            WHERE id=?
-        """, (jina, idadi, bei, tarehe, id))
-
-        conn.commit()
-        return redirect(url_for('dashboard'))
-
-    return render_template("edit.html", dawa=dawa)
-
-# 4. Kuongeza Dawa (Marekebisho: request.form['bei'])
-@app.route('/ongeza', methods=['POST'])
-def ongeza():
-    if request.method == 'POST':
-        jina = request.form['jina']
-        idadi = int(request.form['idadi'])
-        # REKEBISHO: Hapa sasa inasoma 'bei' kutoka kwenye form
-        bei = int(float(request.form['bei'])) 
-        tarehe = request.form['tarehe']
         
-        conn = unganisha_db()
-        conn.execute("INSERT INTO dawa (jina, idadi, bei, tarehe_kuisha) VALUES (?, ?, ?, ?)", 
-                     (jina, idadi, bei, tarehe))
-        conn.commit()
-        flash(f"Dawa '{jina}' imeongezwa kikamilifu!", "success")
-        return redirect(url_for('dashboard'))
-
-# 5. Kuuza Dawa
-@app.route('/uza/<int:id>', methods=['POST'])
-def uza(id):
-    idadi_kuuza = int(request.form['idadi_kuuza'])
     conn = unganisha_db()
-    dawa = conn.execute("SELECT * FROM dawa WHERE id=?", (id,)).fetchone()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM dwa")
+    dawa_zote = cursor.fetchall()
     
-    if dawa and dawa['idadi'] >= idadi_kuuza and idadi_kuuza > 0:
-        idadi_mpya = dawa['idadi'] - idadi_kuuza
-        jumla_pesa = idadi_kuuza * dawa['bei']
-        tarehe_leo = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-        
-        conn.execute("UPDATE dawa SET idadi=? WHERE id=?", (idadi_mpya, id))
-        conn.execute("INSERT INTO mauzo (jina_dawa, idadi_iliyouzwa, jumla_pesa, tarehe) VALUES (?, ?, ?, ?)", (dawa['jina'], idadi_kuuza, jumla_pesa, tarehe_leo))
-        conn.commit()
-        flash(f"Mauzo yamefanikiwa! Umepokea TZS {int(jumla_pesa)}", "success")
-    else:
-        flash("Idadi haitoshi stoo au umeweka namba isiyo sahihi!", "danger")
-    return redirect(url_for('dashboard'))
+    cursor.execute("SELECT m.id, d.jina, m.idadi, m.jumla, m.tarehe FROM mauzo m JOIN dwa d ON m.dawa_id = d.id")
+    mauzo_yote = cursor.fetchall()
+    
+    cursor.close()
+    conn.close()
+    return render_template('dashboard.html', dwa=dawa_zote, mauzo=mauzo_yote)
 
-# 6. Kufuta Dawa
-@app.route('/futa/<int:id>')
-def futa(id):
+@app.route('/ongeza_dawa', methods=['POST'])
+def ongeza_dawa():
+    if 'mtumiaji' not in session:
+        return redirect(url_for('login'))
+        
+    jina = request.form['jina']
+    idadi = int(request.form['idadi'])
+    bei = int(request.form['bei'])
+    tarehe = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    
     conn = unganisha_db()
-    conn.execute("DELETE FROM dawa WHERE id=?", (id,))
+    cursor = conn.cursor()
+    cursor.execute("INSERT INTO dwa (jina, idadi, bei, tarehe) VALUES (%s, %s, %s, %s)", (jina, idadi, bei, tarehe))
     conn.commit()
-    flash("Dawa imefutwa kwenye mfumo!", "warning")
+    cursor.close()
+    conn.close()
+    
+    flash("Dawa imeongezwa kikamilifu!", "success")
     return redirect(url_for('dashboard'))
 
-# 7. Ripoti ya Mauzo
-@app.route('/report')
-def report():
-    if not session.get('loggedin'):
+@app.route('/uza_dawa', methods=['POST'])
+def uza_dawa():
+    if 'mtumiaji' not in session:
         return redirect(url_for('login'))
+        
+    dawa_id = int(request.form['dawa_id'])
+    idadi_ya_kuza = int(request.form['idadi'])
+    tarehe = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    
     conn = unganisha_db()
-    mauzo = conn.execute("SELECT * FROM mauzo ORDER BY id DESC").fetchall()
-    jumla_kuu = sum([m['jumla_pesa'] for m in mauzo])
-    return render_template('report.html', mauzo=mauzo, jumla_kuu=int(jumla_kuu))
+    cursor = conn.cursor()
+    
+    cursor.execute("SELECT idadi, bei FROM dwa WHERE id = %s", (dawa_id,))
+    dawa = cursor.fetchone()
+    
+    if dawa and dawa[0] >= idadi_ya_kuza:
+        idadi_baki = dawa[0] - idadi_ya_kuza
+        jumla_bei = dawa[1] * idadi_ya_kuza
+        
+        cursor.execute("UPDATE dwa SET idadi = %s WHERE id = %s", (idadi_baki, dawa_id))
+        cursor.execute("INSERT INTO mauzo (dawa_id, idadi, jumla, tarehe) VALUES (%s, %s, %s, %s)", (dawa_id, idadi_ya_kuza, jumla_bei, tarehe))
+        conn.commit()
+        flash("Mauzo yamefanyika kikamilifu!", "success")
+    else:
+        flash("Idadi ya dawa haitoshi stoki!", "danger")
+        
+    cursor.close()
+    conn.close()
+    return redirect(url_for('dashboard'))
 
-# 8. Ku-Logout
 @app.route('/logout')
 def logout():
-    session.clear()
+    session.pop('mtumiaji', None)
     return redirect(url_for('login'))
 
-# 9. Futa Mauzo Yote
-@app.route('/futa_mauzo_yote', methods=['POST'])
-def futa_mauzo_yote():
-    if not session.get('loggedin'):
-        return redirect(url_for('login'))
-    
-    password_ya_kufuta = request.form.get('password_futa')
-    ADMIN_PASSWORD = "futa2024" 
-
-    if password_ya_kufuta == ADMIN_PASSWORD:
-        conn = unganisha_db()
-        conn.execute("DELETE FROM mauzo")
-        conn.commit()
-        flash("Historia yote ya mauzo imefutwa kikamilifu!", "success")
-    else:
-        flash("Password ya kufuta si sahihi! Kitendo kimesitishwa.", "danger")
-        
-    return redirect(url_for('report'))
-
 if __name__ == '__main__':
-    app.run(debug=False)
+    app.run(debug=True)
