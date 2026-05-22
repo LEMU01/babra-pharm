@@ -6,7 +6,7 @@
     <title>Babrah Pharmacy</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body class="dashboard-body">
+<body class="dashboard1">
 
     <div class="sidebar">
         <div class="logo-wrapper">
@@ -16,7 +16,7 @@
         <ul class="sidebar-menu">
             <li><a href="{{ url_for('dashboard') }}" class="active">🏠 Home</a></li>
             <li><a href="#inventory-section">📦 Inventory</a></li>
-            <li><a href="{{ url_for('dashboard') }}">📊 Reports</a></li>
+            <li><a href="{{ url_for('report') }}">📊 Reports</a></li>
             <li><a href="#">👥 Staff</a></li>
             <li><a href="#">⚙️ Settings</a></li>
         </ul>
@@ -25,10 +25,10 @@
     <div class="main-content">
         <div class="top-nav">
             <h2 class="system-title">PHARMACY MANAGEMENT SYSTEM</h2>
-            <div class="user-profile">
+            <div class="top-nav-right">
                 <span>🔔</span>
-                <span class="user-name">Admin</span>
-                <a href="{{ url_for('logout') }}" class="btn-leave">Leave</a>
+                <span class="user-admin">Admin</span>
+                <a href="{{ url_for('logout') }}" class="btn btn-leave">Leave</a>
             </div>
         </div>
 
@@ -44,12 +44,25 @@
             {% endwith %}
 
             <div class="card">
-                <div class="card-header"><h3>➕ ADD NEW MEDICINE</h3></div>
-                <form action="{{ url_for('ongeza_dawa') }}" method="POST" class="form-responsive">
+                <div class="n"><h3>➕ ADD NEW MEDICINE</h3></div>
+                <form action="{{ url_for('ongeza') }}" method="POST" class="form-responsive">
                     <input type="text" name="jina" placeholder="Medicine name" required class="input-field flex-2">
                     <input type="number" name="idadi" placeholder="Qty" required class="input-field flex-0-5">
                     <input type="number" name="bei" placeholder="Price (TZS)" required class="input-field flex-1">
-                    <button type="submit" class="btn btn-add">+ Add</button>
+                    <input type="date" name="tarehe" required class="input-field flex-1">
+                    <button type="submit" class="btn btn-success">+ Add</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <form action="{{ url_for('dashboard') }}#inventory-section" method="GET" class="form-responsive">
+                    <input type="text" name="search" placeholder="Find Medicine..." value="{{ search_query if search_query else '' }}" class="input-field flex-grow">
+                    <div class="search-buttons">
+                        <button type="submit" class="btn btn-primary">🔍 Search</button>
+                        {% if search_query %}
+                            <a href="{{ url_for('dashboard') }}" class="btn btn-danger">X</a>
+                        {% endif %}
+                    </div>
                 </form>
             </div>
 
@@ -63,25 +76,28 @@
                                 <th>Name</th>
                                 <th>Quantity</th>
                                 <th>Price</th>
-                                <th>Date Added</th>
+                                <th>Exp Date</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for d in dwa %}
+                            {% for d in dawa %}
                             <tr>
-                                <td>{{ d[0] }}</td>
-                                <td><strong>{{ d[1] }}</strong></td>
-                                <td>{{ d[2] }}</td>
-                                <td class="price-text">{{ d[3] }} TZS</td>
-                                <td>{{ d[4] }}</td>
+                                <td>{{ loop.index }}</td>
+                                <td><strong>{{ d.jina }}</strong></td>
+                                <td>{{ d.idadi }}</td>
+                                <td class="price-text">{{ "{:,.0f}".format(d.bei) }} TZS</td>
+                                <td>{{ d.tarehe_kuisha }}</td>
                                 <td>
                                     <div class="action-wrapper">
-                                        <form action="{{ url_for('uza_dawa') }}" method="POST" class="form-sale">
-                                            <input type="hidden" name="dawa_id" value="{{ d[0] }}">
-                                            <input type="number" name="idadi" placeholder="Qty" class="input-sale-qty" required>
-                                            <button type="submit" class="btn-sale">Sale</button>
+                                        <form action="{{ url_for('uza', id=d.id) }}" method="POST" class="form-sale">
+                                            <input type="number" name="idadi_kuuza" placeholder="Qty" class="input-sale-qty" required>
+                                            <button type="submit" class="btn btn-sale">Sale</button>
                                         </form>
+                                        <div class="crud-buttons">
+                                            <a href="{{ url_for('edit', id=d.id) }}" class="btn2">Edit</a>
+                                            <a href="{{ url_for('futa', id=d.id) }}" class="btn btn-danger" onclick="return confirm('Futa dawa hii?')">Delete</a>
+                                        </div>
                                     </div>
                                 </td>
                             </tr>
@@ -96,6 +112,17 @@
             </div>
         </div>
     </div>
+
+    {% if search_query %}
+    <script>
+        window.onload = function() {
+            const element = document.getElementById("inventory-section");
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+        };
+    </script>
+    {% endif %}
 
 </body>
 </html>

@@ -1,4 +1,4 @@
-/* RESET STYLES */
+/* GENERAL RESET */
 * {
     margin: 0;
     padding: 0;
@@ -8,7 +8,7 @@
 
 body {
     display: flex;
-    background-color: #f4f6f9;
+    background: #f4f6f9;
     color: #333;
     min-height: 100vh;
 }
@@ -69,13 +69,14 @@ body {
     color: #fff;
 }
 
-/* MAIN CONTENT LAYOUT */
+/* MAIN CONTENT */
 .main-content {
     margin-left: 260px;
     flex: 1;
     padding: 20px;
 }
 
+/* NAVIGATION BAR */
 .top-nav {
     display: flex;
     justify-content: space-between;
@@ -87,27 +88,23 @@ body {
     margin-bottom: 25px;
 }
 
-.user-profile {
+.system-title {
+    margin: 0;
+    font-size: 1.2rem;
+    color: #1e293b;
+}
+
+.top-nav-right {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 20px;
 }
 
-.user-name {
-    font-weight: 600;
+.user-admin {
+    font-weight: bold;
 }
 
-.btn-leave {
-    background: #ef4444;
-    color: white;
-    padding: 8px 16px;
-    text-decoration: none;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    font-weight: 500;
-}
-
-/* CARDS & CONTAINERS */
+/* CARDS CONFIGURATION */
 .container {
     max-width: 1200px;
     margin: 0 auto;
@@ -122,63 +119,91 @@ body {
 }
 
 .card h3 {
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     font-size: 1.1rem;
     color: #1e293b;
 }
 
-/* FORM STYLES */
+/* FORM ELEMENTS */
 .form-responsive {
     display: flex;
-    gap: 15px;
+    gap: 12px;
     flex-wrap: wrap;
+    align-items: center;
 }
 
 .input-field {
-    padding: 12px;
+    padding: 10px 15px;
     border: 1px solid #cbd5e1;
     border-radius: 6px;
     font-size: 0.95rem;
     outline: none;
+    height: 42px;
 }
 
 .input-field:focus {
     border-color: #0284c7;
 }
 
-.flex-2 { flex: 2; min-width: 200px; }
-.flex-1 { flex: 1; min-width: 120px; }
+.flex-2 { flex: 2; min-width: 180px; }
+.flex-1 { flex: 1; min-width: 130px; }
 .flex-0-5 { flex: 0.5; min-width: 70px; }
+.flex-grow { flex: 1; min-width: 200px; }
 
-.btn-add {
-    background: #10b981;
-    color: white;
+.search-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+/* BUTTONS SYSTEM */
+.btn {
+    padding: 10px 20px;
     border: none;
-    padding: 12px 24px;
     border-radius: 6px;
     cursor: pointer;
     font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 42px;
 }
 
-/* TABLES SYSTEM */
+.btn-success { background: #10b981; color: white; }
+.btn-primary { background: #0284c7; color: white; }
+.btn-danger { background: #ef4444; color: white; }
+.btn-leave { background: #ef4444; color: white; }
+
+.btn2 {
+    background: #3b82f6;
+    color: white;
+    padding: 8px 15px;
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: inline-block;
+}
+
+/* TABLE RESPONSIBILITIES */
 .table-container {
     width: 100%;
-    overflow-x: auto; /* Inaruhusu jedwali lisukumwe kwa kidole kulia/kushoto kwenye simu */
+    overflow-x: auto;
     -webkit-overflow-scrolling: touch;
 }
 
 table {
     width: 100%;
     border-collapse: collapse;
-    margin-top: 10px;
 }
 
 th, td {
-    padding: 14px;
+    padding: 12px 15px;
     text-align: left;
     border-bottom: 1px solid #e2e8f0;
     font-size: 0.95rem;
-    white-space: nowrap; /* Inazuia maneno kujikunja vibaya kwenye kioo kidogo */
+    white-space: nowrap; /* Inazuia herufi za jedwali kujikunja ovyo */
 }
 
 th {
@@ -192,9 +217,12 @@ th {
     color: #0f766e;
 }
 
+/* TABLE ACTIONS LAYOUT */
 .action-wrapper {
     display: flex;
-    gap: 10px;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
 }
 
 .form-sale {
@@ -205,18 +233,33 @@ th {
 
 .input-sale-qty {
     width: 65px;
-    padding: 6px;
+    padding: 8px;
     border: 1px solid #cbd5e1;
     border-radius: 4px;
+    height: 35px;
 }
 
 .btn-sale {
     background: #f59e0b;
     color: white;
     border: none;
-    padding: 6px 12px;
+    padding: 0 12px;
     border-radius: 4px;
     cursor: pointer;
+    height: 35px;
+    font-weight: 600;
+}
+
+.crud-buttons {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+}
+
+.crud-buttons .btn-danger {
+    padding: 8px 15px;
+    height: auto;
+    font-size: 0.9rem;
 }
 
 .no-data {
@@ -227,18 +270,18 @@ th {
 
 .alert {
     padding: 12px;
-    background: #d1e7dd;
-    color: #0f5132;
     border-radius: 6px;
     margin-bottom: 20px;
 }
+.alert-success { background: #d1e7dd; color: #0f5132; }
+.alert-danger { background: #f8d7da; color: #842029; }
 
-/* ==========================================
-   MABADILIKO MAALUMU KWA AJILI YA SIMU (MOBILE)
-   ========================================== */
+/* ===================================================
+   MEDIA QUERY: INABADILISHA MUONEKANO KWENYE SIMU
+   =================================================== */
 @media (max-width: 768px) {
     body {
-        flex-direction: column; /* Inalazimu vitu vishuke chini badala ya kukaa pembeni */
+        flex-direction: column;
     }
 
     .sidebar {
@@ -271,7 +314,7 @@ th {
     }
 
     .main-content {
-        margin-left: 0; /* Inapanua eneo la katikati lijaze kioo cha simu */
+        margin-left: 0;
         padding: 15px;
     }
 
@@ -283,19 +326,44 @@ th {
     }
 
     .system-title {
-        font-size: 1rem !important;
+        font-size: 1.05rem;
     }
 
-    .user-profile {
+    .top-nav-right {
         width: 100%;
         justify-content: space-between;
     }
 
     .form-responsive {
-        flex-direction: column; /* Inafanya masanduku ya kujaza dawa yajipange kwenda chini */
+        flex-direction: column;
+        align-items: stretch;
     }
 
-    .input-field, .btn-add {
-        width: 100%; /* Inafanya kila kisanduku kiwe kipana kujaza simu */
+    .input-field, .btn, .search-buttons, .search-buttons .btn {
+        width: 100%;
+    }
+
+    .action-wrapper {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 8px;
+    }
+
+    .form-sale {
+        width: 100%;
+    }
+
+    .input-sale-qty {
+        flex: 1;
+    }
+
+    .crud-buttons {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .crud-buttons a {
+        flex: 1;
+        text-align: center;
     }
 }
