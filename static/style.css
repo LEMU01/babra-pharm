@@ -1,4 +1,4 @@
-/* RESET & BASE STYLES */
+/* RESET STYLES */
 * {
     margin: 0;
     padding: 0;
@@ -22,6 +22,7 @@ body {
     position: fixed;
     height: 100vh;
     overflow-y: auto;
+    z-index: 100;
 }
 
 .logo-wrapper {
@@ -126,7 +127,7 @@ body {
     color: #1e293b;
 }
 
-/* RESPONSIVE FORM FOR ADDING MEDICINE */
+/* FORM STYLES */
 .form-responsive {
     display: flex;
     gap: 15px;
@@ -162,7 +163,8 @@ body {
 /* TABLES SYSTEM */
 .table-container {
     width: 100%;
-    overflow-x: auto; /* Inaruhusu jedwali lisukumwe kushoto/kulia kwenye simu badala ya kubana kioo */
+    overflow-x: auto; /* Inaruhusu jedwali lisukumwe kwa kidole kulia/kushoto kwenye simu */
+    -webkit-overflow-scrolling: touch;
 }
 
 table {
@@ -176,6 +178,7 @@ th, td {
     text-align: left;
     border-bottom: 1px solid #e2e8f0;
     font-size: 0.95rem;
+    white-space: nowrap; /* Inazuia maneno kujikunja vibaya kwenye kioo kidogo */
 }
 
 th {
@@ -230,12 +233,12 @@ th {
     margin-bottom: 20px;
 }
 
-/* =======================================================
-   HAPA NDIPO PANAPOTENGENEZA MUONEKANO WA SIMU (RESPONSIVE)
-   ======================================================= */
+/* ==========================================
+   MABADILIKO MAALUMU KWA AJILI YA SIMU (MOBILE)
+   ========================================== */
 @media (max-width: 768px) {
     body {
-        flex-direction: column; /* Inapanga vitu kwenda chini badala ya kushoto-kulia */
+        flex-direction: column; /* Inalazimu vitu vishuke chini badala ya kukaa pembeni */
     }
 
     .sidebar {
@@ -248,12 +251,14 @@ th {
     .logo-wrapper {
         margin-bottom: 15px;
         padding-bottom: 10px;
+        justify-content: center;
     }
 
     .sidebar-menu {
         display: flex;
         flex-wrap: wrap;
-        gap: 5px;
+        justify-content: center;
+        gap: 8px;
     }
 
     .sidebar-menu li {
@@ -266,13 +271,13 @@ th {
     }
 
     .main-content {
-        margin-left: 0; /* Inatengua ule ukingo wa kushoto ili maudhui yajaze kioo cha simu */
+        margin-left: 0; /* Inapanua eneo la katikati lijaze kioo cha simu */
         padding: 15px;
     }
 
     .top-nav {
         flex-direction: column;
-        gap: 10px;
+        gap: 12px;
         align-items: flex-start;
         padding: 15px;
     }
@@ -287,10 +292,10 @@ th {
     }
 
     .form-responsive {
-        flex-direction: column; /* Fomu ya kuongeza dawa inajipanga kwenda chini kwenye simu */
+        flex-direction: column; /* Inafanya masanduku ya kujaza dawa yajipange kwenda chini */
     }
 
     .input-field, .btn-add {
-        width: 100%; /* Kila kisanduku kinajaza upana mzima wa simu */
+        width: 100%; /* Inafanya kila kisanduku kiwe kipana kujaza simu */
     }
 }
