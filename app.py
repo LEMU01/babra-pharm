@@ -95,7 +95,7 @@ def dashboard():
 
 # Njia zote mbili zilizosababisha migogoro tumeziunganisha hapa kwa amani
 @app.route('/ongeza', methods=['POST'])
-def ongeza_dawa():
+def ongeza():
     if 'mtumiaji' not in session:
         return redirect(url_for('login'))
         
