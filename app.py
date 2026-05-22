@@ -1,11 +1,12 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+import os
 
 app = Flask(__name__)
 app.secret_key = "siri_nzito_sana"
 
-# URI iliyonyooka yenye password yako mpya na bandari (port) sahihi ya Supabase
+# Kutumia URI iliyonyooka bila pooler kama Render inagoma kujiunganisha nayo kiwanda
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:Lemu123#456@db.ltfzabxpwnxkuiwyomjv.supabase.co:5432/postgres'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -14,7 +15,6 @@ db = SQLAlchemy(app)
 def unganisha_db():
     return db.engine.raw_connection()
 
-# Kutengeneza meza kwenye Supabase kiotomatiki zikiwa hazipo
 with app.app_context():
     try:
         conn = unganisha_db()
@@ -26,17 +26,16 @@ with app.app_context():
                             bei INTEGER, 
                             tarehe TEXT)''')
         cursor.execute('''CREATE TABLE IF NOT EXISTS mauzo (
-                        id SERIAL PRIMARY KEY, 
-                        dawa_id INTEGER, 
-                        idadi INTEGER, 
-                        jumla INTEGER, 
-                        tarehe TEXT)''')
+                            id SERIAL PRIMARY KEY, 
+                            dawa_id INTEGER, 
+                            idadi INTEGER, 
+                            jumla INTEGER, 
+                            tarehe TEXT)''')
         cursor.execute('''CREATE TABLE IF NOT EXISTS watumiaji (
                             id SERIAL PRIMARY KEY, 
                             jina TEXT UNIQUE, 
                             nywila TEXT)''')
-    
-        # Kuongeza akaunti ya kwanza ya admin kama haipo
+        
         cursor.execute("SELECT * FROM watumiaji WHERE jina = %s", ('admin',))
         if not cursor.fetchone():
             cursor.execute("INSERT INTO watumiaji (jina, nywila) VALUES (%s, %s)", ('admin', 'admin123'))
@@ -44,7 +43,7 @@ with app.app_context():
         cursor.close()
         conn.close()
     except Exception as e:
-        print(f"Database Error: {e}")
+        print(f"Database Initialization Error: {e}")
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
@@ -67,7 +66,7 @@ def login():
                 flash("Jina au nywila si sahihi!", "danger")
                 return redirect(url_for('login'))
         except Exception as e:
-            flash("Imeshindwa kuunganisha kanizadata!", "danger")
+            flash("Imeshindwa kuunganisha database!", "danger")
             return redirect(url_for('login'))
             
     return render_template('login.html')
@@ -90,7 +89,7 @@ def dashboard():
         conn.close()
         return render_template('dashboard.html', dwa=dawa_zote, mauzo=mauzo_yote)
     except Exception as e:
-        return f"Ushonaji wa data umefeli: {e}"
+        return f"Error: {e}"
 
 @app.route('/ongeza_dawa', methods=['POST'])
 def ongeza_dawa():
@@ -109,7 +108,6 @@ def ongeza_dawa():
     cursor.close()
     conn.close()
     
-    flash("Dawa imeongezwa kikamilifu!", "success")
     return redirect(url_for('dashboard'))
 
 @app.route('/uza_dawa', methods=['POST'])
@@ -123,7 +121,6 @@ def uza_dawa():
     
     conn = unganisha_db()
     cursor = conn.cursor()
-    
     cursor.execute("SELECT idadi, bei FROM dwa WHERE id = %s", (dawa_id,))
     dawa = cursor.fetchone()
     
@@ -134,10 +131,6 @@ def uza_dawa():
         cursor.execute("UPDATE dwa SET idadi = %s WHERE id = %s", (idadi_baki, dawa_id))
         cursor.execute("INSERT INTO mauzo (dawa_id, idadi, jumla, tarehe) VALUES (%s, %s, %s, %s)", (dawa_id, idadi_ya_kuza, jumla_bei, tarehe))
         conn.commit()
-        flash("Mauzo yamefanyika kikamilifu!", "success")
-    else:
-        flash("Idadi ya dawa haitoshi stoki!", "danger")
-        
     cursor.close()
     conn.close()
     return redirect(url_for('dashboard'))
@@ -149,3 +142,4 @@ def logout():
 
 if __name__ == '__main__':
     app.run(debug=False)
+    
