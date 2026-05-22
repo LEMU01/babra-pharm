@@ -4,13 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Babrah Pharmacy</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Hapa ndipo unapoziunganisha CSS -->
+    <link rel="stylesheet" href="static/style.css">
 </head>
 <body class="dashboard1">
 
+    <!-- SIDEBAR -->
     <div class="sidebar">
         <div class="logo-wrapper">
-            <img src="{{ url_for('static', filename='logo.png') }}" class="pharmacy-logo" alt="Logo">
+            <img src="{{ url_for('static', filename='background.jpeg/logo.png') }}" class="pharmacy-logo" alt="Logo">
             <span class="brand-text">BABRAH PHARMACY</span>
         </div>
         <ul class="sidebar-menu">
@@ -22,17 +24,20 @@
         </ul>
     </div>
 
+    <!-- MAIN CONTENT -->
     <div class="main-content">
+        <!-- Top Navigation -->
         <div class="top-nav">
             <h2 style="margin:0; font-size: 1.2rem;">PHARMACY MANAGEMENT SYSTEM</h2>
             <div style="display: flex; align-items: center; gap: 20px;">
                 <span>🔔</span>
                 <span style="font-weight: bold; ">Admin</span>
-                <a href="{{ url_for('logout') }}" class="btn" style="background: #ef4444; color: white; padding: 8px 15px; text-decoration: none;">Leave</a>
+                <a href="{{ url_for('logout') }}" class="btn" style="background: #ef4444; color: white; padding: 8px 15px;">Leave</a>
             </div>
         </div>
 
         <div class="container">
+            <!-- Alert Messages -->
             {% with messages = get_flashed_messages(with_categories=true) %}
               {% if messages %}
                 {% for category, message in messages %}
@@ -43,10 +48,11 @@
               {% endif %}
             {% endwith %}
 
+            <!-- Card: Add Medicine -->
             <div class="card">
                 <div class="n"><h3>➕ ADD NEW MEDICINE</h3></div>
                 
-                <form action="{{ url_for('ongeza_dawa') }}" method="POST">
+                <form action="{{ url_for('ongeza') }}" method="POST">
                     <input type="text" name="jina" placeholder="Medicine name" required style="flex: 2;">
                     <input type="number" name="idadi" placeholder="Qty" required style="flex: 0.5;">
                     <input type="number" name="bei" placeholder="Price (TZS)" required style="flex: 1;">
@@ -55,16 +61,18 @@
                 </form>
             </div>
 
+            <!-- Card: Search Bar -->
             <div class="card">
                 <form action="{{ url_for('dashboard') }}#inventory-section" method="GET">
                     <input type="text" name="search" placeholder="Find Medicine..." value="{{ search_query if search_query else '' }}" style="flex: 1;">
                     <button type="submit" class="btn btn-primary">🔍 Search</button>
                     {% if search_query %}
-                        <a href="{{ url_for('dashboard') }}" class="btn btn-danger" style="text-decoration: none; text-align: center;">X</a>
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-danger">X</a>
                     {% endif %}
                 </form>
             </div>
 
+            <!-- Card: Medicine Inventory -->
             <div class="card" id="inventory-section">
                 <h3>📋 MEDICINE INVENTORY</h3>
                 <div class="table-container">
@@ -80,28 +88,28 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for d in dwa %}
+                            
+                            {% for d in dawa %}
                             <tr>
                                 <td>{{ loop.index }}</td>
-                                <td><strong>{{ d[1] }}</strong></td>
-                                <td>{{ d[2] }}</td>
-                                <td class="price-text">{{ d[3] }} TZS</td>
-                                <td>{{ d[4] }}</td>
+                                <td><strong>{{ d.jina }}</strong></td>
+                                <td>{{ d.idadi }}</td>
+                                <td class="price-text">{{ "{:,.0f}".format(d.bei) }} TZS</td>
+                                <td>{{ d.tarehe_kuisha }}</td>
                                 <td>
-                                    <div class="b" style="display: flex; gap: 8px; flex-wrap: nowrap;">
-                                        <form action="{{ url_for('uza_dawa') }}" method="POST" style="display: flex; gap: 5px; margin: 0;">
-                                            <input type="hidden" name="dawayao_id" value="{{ d[0] }}">
-                                            <input type="number" name="idadi" placeholder="Qty" style="width: 60px; padding: 5px;" required>
-                                            <div class="btn1"><button type="submit" class="btn" style="padding: 5px 10px; font-size: 0.8rem;">Sale</button></div>
+                                    <div class="b" style="display: flex; gap: 8px;">
+                                        <form action="{{ url_for('uza', id=d.id) }}" method="POST" style="display: flex; gap: 5px;">
+                                            <input type="number" name="idadi_kuuza" placeholder="Qty" style="width: 60px; padding: 10px 20px;" required>
+                                           <div class="btn1"> <button type="submit" class="btn" >Sale</button></div>
+                                           
                                         </form>
-                                        <a href="{{ url_for('edit', id=d[0]) }}" class="btn2" style="font-size: 0.8rem; padding: 6px 12px;">Edit</a>
-                                        <a href="{{ url_for('futa', id=d[0]) }}" class="btn btn-danger" style="padding: 6px 12px; font-size: 0.8rem;" onclick="return confirm('Futa dawa hii?')">Delete</a>
+        <a href="{{ url_for('edit', id=d.id) }}" class="btn2">
+    Edit
+</a>
+                                        <a href="{{ url_for('futa', id=d.id) }}" class="btn btn-danger" style="padding: 10px 20px;" onclick="return confirm('Futa dawa hii?')">Delete</a>
                                     </div>
+                                    
                                 </td>
-                            </tr>
-                            {% else %}
-                            <tr>
-                                <td colspan="6" style="text-align: center; color: #cbd5e1; padding: 20px;">Hakuna dawa kwenye stoki kwa sasa.</td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -111,6 +119,7 @@
         </div>
     </div>
 
+    <!-- Script kwa ajili ya Auto-Scroll -->
     {% if search_query %}
     <script>
         window.onload = function() {
@@ -122,5 +131,16 @@
     </script>
     {% endif %}
 
+</div>
+
 </body>
 </html>
+
+</body>
+</html>
+
+
+
+
+
+
