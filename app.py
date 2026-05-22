@@ -5,8 +5,8 @@ from datetime import datetime
 app = Flask(__name__)
 app.secret_key = "siri_nzito_sana"
 
-# Hapa nimeweka password yako mpya (Lemu1234#567) bila alama ya @ na bila mabano
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres.ltfzabxpwnxkuiwyomjv:Lemu1234#567@aws-0-eu-west-1.pooler.supabase.com:6543/postgres'
+# URI iliyosafishwa yenye password yako mpya ya Lemu1234#567 bila makosa
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:Lemu123#456@db.ltfzabxpwnxkuiwyomjv.supabase.co:5432/postgres'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -138,4 +138,5 @@ def logout():
     return redirect(url_for('login'))
 
 if __name__ == '__main__':
+    # Kama tulivyokubaliana, debug imewekwa False kwa usalama
     app.run(debug=False)
