@@ -93,9 +93,8 @@ def dashboard():
     except Exception as e:
         return f"Ushonaji wa data umefeli: {e}"
 
-# TUMEWEKA ROUTE MBILI ILI HATA HTML IKIITA 'ongeza' AU 'ongeza_dawa' ISIFELI!
+# Njia zote mbili zilizosababisha migogoro tumeziunganisha hapa kwa amani
 @app.route('/ongeza_dawa', methods=['POST'])
-@app.route('/ongeza', methods=['POST'])
 def ongeza_dawa():
     if 'mtumiaji' not in session:
         return redirect(url_for('login'))
@@ -115,9 +114,12 @@ def ongeza_dawa():
     flash("Dawa imeongezwa kikamilifu!", "success")
     return redirect(url_for('dashboard'))
 
-# TUMEWEKA ROUTE MBILI PIA KWA AJILI YA KUUZA DAWA ILI KULINDA USALAMA
+# Hapa tunatengeneza jina la 'ongeza' ambalo HTML yako inalililia, ili liiite kazi ileile ya juu
+@app.route('/ongeza', methods=['POST'])
+def ongeza():
+    return ongeza_dawa()
+
 @app.route('/uza_dawa', methods=['POST'])
-@app.route('/uza', methods=['POST'])
 def uza_dawa():
     if 'mtumiaji' not in session:
         return redirect(url_for('login'))
@@ -147,20 +149,18 @@ def uza_dawa():
     conn.close()
     return redirect(url_for('dashboard'))
 
-# ROUTE MBILI KWA AJILI YA RIPOTI
 @app.route('/report')
-@app.route('/ripoti')
 def report():
     if 'mtumiaji' not in session:
         return redirect(url_for('login'))
     return redirect(url_for('dashboard'))
 
-# ROUTE MBILI KWA AJILI YA LOGOUT
 @app.route('/logout')
-@app.route('/ondoka')
 def logout():
     session.pop('mtumiaji', None)
     return redirect(url_for('login'))
 
 if __name__ == '__main__':
-    app.run(debug=False)
+    # Hii inasaidia kupata Port ya Render bila kuleta migogoro wakati wa kuwaka
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port, debug=False)
