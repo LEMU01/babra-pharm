@@ -1,22 +1,20 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
-import sqlite3
+from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
 app = Flask(__name__)
-app.secret_key = "siri_nzito_sana" 
+app.secret_key = "siri_nzito_sana"
 
-# 1. Kuunganisha Database (Marekebisho: INTEGER badala ya REAL)
+# BANDIKA ILE URI ULIYOCOPY HAPA
+# Hakikisha unafuta neno [YOUR-PASSWORD] na kuweka ile password halisi ya babra-db uliyoweka mwanzo
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:Lemu123@456@db.ltfzabxpwnxkuiwyomjv.supabase.co:5432/postgres'
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+
+db = SQLAlchemy(app)
+
+# Inazuia kubadilisha kodi zako zote za chini zinazotumia cursor.execute
 def unganisha_db():
-    conn = sqlite3.connect('pharmacy.db')
-    conn.row_factory = sqlite3.Row 
-    cursor = conn.cursor()
-    # Tumetumia INTEGER kwenye bei ili kuzuia desimali (.0)
-    cursor.execute('''CREATE TABLE IF NOT EXISTS dawa (id INTEGER PRIMARY KEY AUTOINCREMENT, jina TEXT NOT NULL, idadi INTEGER NOT NULL, bei INTEGER NOT NULL, tarehe_kuisha TEXT NOT NULL)''')
-    cursor.execute('''CREATE TABLE IF NOT EXISTS mauzo (id INTEGER PRIMARY KEY AUTOINCREMENT, jina_dawa TEXT NOT NULL, idadi_iliyouzwa INTEGER NOT NULL, jumla_pesa INTEGER NOT NULL, tarehe TEXT NOT NULL)''')
-    cursor.execute('''CREATE TABLE IF NOT EXISTS watumiaji (id INTEGER PRIMARY KEY AUTOINCREMENT, jina TEXT UNIQUE NOT NULL, nywila TEXT NOT NULL)''')
-    cursor.execute("INSERT OR IGNORE INTO watumiaji (jina, nywila) VALUES ('admin', 'admin123')")
-    conn.commit()
-    return conn
+    return db.engine.raw_connection()
 
 # 2. Ukurasa wa Login
 @app.route('/', methods=['GET', 'POST'])
