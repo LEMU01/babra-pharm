@@ -5,7 +5,7 @@ from datetime import datetime
 app = Flask(__name__)
 app.secret_key = "siri_nzito_sana"
 
-# URI iliyosafishwa yenye password yako mpya ya Lemu1234#567 bila makosa
+# URI iliyonyooka yenye password yako mpya na bandari (port) sahihi ya Supabase
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:Lemu123#456@db.ltfzabxpwnxkuiwyomjv.supabase.co:5432/postgres'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
@@ -16,32 +16,35 @@ def unganisha_db():
 
 # Kutengeneza meza kwenye Supabase kiotomatiki zikiwa hazipo
 with app.app_context():
-    conn = unganisha_db()
-    cursor = conn.cursor()
-    cursor.execute('''CREATE TABLE IF NOT EXISTS dwa (
-                        id SERIAL PRIMARY KEY, 
-                        jina TEXT, 
-                        idadi INTEGER, 
-                        bei INTEGER, 
-                        tarehe TEXT)''')
-    cursor.execute('''CREATE TABLE IF NOT EXISTS mauzo (
+    try:
+        conn = unganisha_db()
+        cursor = conn.cursor()
+        cursor.execute('''CREATE TABLE IF NOT EXISTS dwa (
+                            id SERIAL PRIMARY KEY, 
+                            jina TEXT, 
+                            idadi INTEGER, 
+                            bei INTEGER, 
+                            tarehe TEXT)''')
+        cursor.execute('''CREATE TABLE IF NOT EXISTS mauzo (
                         id SERIAL PRIMARY KEY, 
                         dawa_id INTEGER, 
                         idadi INTEGER, 
                         jumla INTEGER, 
                         tarehe TEXT)''')
-    cursor.execute('''CREATE TABLE IF NOT EXISTS watumiaji (
-                        id SERIAL PRIMARY KEY, 
-                        jina TEXT UNIQUE, 
-                        nywila TEXT)''')
+        cursor.execute('''CREATE TABLE IF NOT EXISTS watumiaji (
+                            id SERIAL PRIMARY KEY, 
+                            jina TEXT UNIQUE, 
+                            nywila TEXT)''')
     
-    # Kuongeza akaunti ya kwanza ya admin kama haipo
-    cursor.execute("SELECT * FROM watumiaji WHERE jina = %s", ('admin',))
-    if not cursor.fetchone():
-        cursor.execute("INSERT INTO watumiaji (jina, nywila) VALUES (%s, %s)", ('admin', 'admin123'))
-    conn.commit()
-    cursor.close()
-    conn.close()
+        # Kuongeza akaunti ya kwanza ya admin kama haipo
+        cursor.execute("SELECT * FROM watumiaji WHERE jina = %s", ('admin',))
+        if not cursor.fetchone():
+            cursor.execute("INSERT INTO watumiaji (jina, nywila) VALUES (%s, %s)", ('admin', 'admin123'))
+        conn.commit()
+        cursor.close()
+        conn.close()
+    except Exception as e:
+        print(f"Database Error: {e}")
 
 @app.route('/', methods=['GET', 'POST'])
 def login():
@@ -49,18 +52,22 @@ def login():
         jina = request.form['jina']
         nywila = request.form['nywila']
         
-        conn = unganisha_db()
-        cursor = conn.cursor()
-        cursor.execute("SELECT * FROM watumiaji WHERE jina = %s AND nywila = %s", (jina, nywila))
-        mtumiaji = cursor.fetchone()
-        cursor.close()
-        conn.close()
-        
-        if mtumiaji:
-            session['mtumiaji'] = jina
-            return redirect(url_for('dashboard'))
-        else:
-            flash("Jina au nywila si sahihi!", "danger")
+        try:
+            conn = unganisha_db()
+            cursor = conn.cursor()
+            cursor.execute("SELECT * FROM watumiaji WHERE jina = %s AND nywila = %s", (jina, nywila))
+            mtumiaji = cursor.fetchone()
+            cursor.close()
+            conn.close()
+            
+            if mtumiaji:
+                session['mtumiaji'] = jina
+                return redirect(url_for('dashboard'))
+            else:
+                flash("Jina au nywila si sahihi!", "danger")
+                return redirect(url_for('login'))
+        except Exception as e:
+            flash("Imeshindwa kuunganisha kanizadata!", "danger")
             return redirect(url_for('login'))
             
     return render_template('login.html')
@@ -70,17 +77,20 @@ def dashboard():
     if 'mtumiaji' not in session:
         return redirect(url_for('login'))
         
-    conn = unganisha_db()
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM dwa")
-    dawa_zote = cursor.fetchall()
-    
-    cursor.execute("SELECT m.id, d.jina, m.idadi, m.jumla, m.tarehe FROM mauzo m JOIN dwa d ON m.dawa_id = d.id")
-    mauzo_yote = cursor.fetchall()
-    
-    cursor.close()
-    conn.close()
-    return render_template('dashboard.html', dwa=dawa_zote, mauzo=mauzo_yote)
+    try:
+        conn = unganisha_db()
+        cursor = conn.cursor()
+        cursor.execute("SELECT * FROM dwa")
+        dawa_zote = cursor.fetchall()
+        
+        cursor.execute("SELECT m.id, d.jina, m.idadi, m.jumla, m.tarehe FROM mauzo m JOIN dwa d ON m.dawa_id = d.id")
+        mauzo_yote = cursor.fetchall()
+        
+        cursor.close()
+        conn.close()
+        return render_template('dashboard.html', dwa=dawa_zote, mauzo=mauzo_yote)
+    except Exception as e:
+        return f"Ushonaji wa data umefeli: {e}"
 
 @app.route('/ongeza_dawa', methods=['POST'])
 def ongeza_dawa():
@@ -138,5 +148,4 @@ def logout():
     return redirect(url_for('login'))
 
 if __name__ == '__main__':
-    # Kama tulivyokubaliana, debug imewekwa False kwa usalama
     app.run(debug=False)
