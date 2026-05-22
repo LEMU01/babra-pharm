@@ -16,7 +16,7 @@
         <ul class="sidebar-menu">
             <li><a href="{{ url_for('dashboard') }}" class="active">🏠 Home</a></li>
             <li><a href="#inventory-section">📦 Inventory</a></li>
-            <li><a href="{{ url_for('report') }}">📊 Reports</a></li>
+            <li><a href="{{ url_for('dashboard') }}">📊 Reports</a></li>
             <li><a href="#">👥 Staff</a></li>
             <li><a href="#">⚙️ Settings</a></li>
         </ul>
@@ -26,7 +26,7 @@
         <div class="top-nav">
             <h2 class="system-title">PHARMACY MANAGEMENT SYSTEM</h2>
             <div class="user-profile">
-                <span class="bell-icon">🔔</span>
+                <span>🔔</span>
                 <span class="user-name">Admin</span>
                 <a href="{{ url_for('logout') }}" class="btn-leave">Leave</a>
             </div>
@@ -45,7 +45,7 @@
 
             <div class="card">
                 <div class="card-header"><h3>➕ ADD NEW MEDICINE</h3></div>
-                <form action="{{ url_for('ongeza') }}" method="POST" class="form-responsive">
+                <form action="{{ url_for('ongeza_dawa') }}" method="POST" class="form-responsive">
                     <input type="text" name="jina" placeholder="Medicine name" required class="input-field flex-2">
                     <input type="number" name="idadi" placeholder="Qty" required class="input-field flex-0-5">
                     <input type="number" name="bei" placeholder="Price (TZS)" required class="input-field flex-1">
@@ -77,7 +77,7 @@
                                 <td>{{ d[4] }}</td>
                                 <td>
                                     <div class="action-wrapper">
-                                        <form action="{{ url_for('uza') }}" method="POST" class="form-sale">
+                                        <form action="{{ url_for('uza_dawa') }}" method="POST" class="form-sale">
                                             <input type="hidden" name="dawa_id" value="{{ d[0] }}">
                                             <input type="number" name="idadi" placeholder="Qty" class="input-sale-qty" required>
                                             <button type="submit" class="btn-sale">Sale</button>
