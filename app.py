@@ -94,7 +94,7 @@ def dashboard():
         return f"Ushonaji wa data umefeli: {e}"
 
 # Njia zote mbili zilizosababisha migogoro tumeziunganisha hapa kwa amani
-@app.route('/ongeza_dawa', methods=['POST'])
+@app.route('/ongeza', methods=['POST'])
 def ongeza_dawa():
     if 'mtumiaji' not in session:
         return redirect(url_for('login'))
@@ -119,7 +119,7 @@ def ongeza_dawa():
 def ongeza():
     return ongeza_dawa()
 
-@app.route('/uza_dawa', methods=['POST'])
+@app.route('/uza', methods=['POST'])
 def uza_dawa():
     if 'mtumiaji' not in session:
         return redirect(url_for('login'))
