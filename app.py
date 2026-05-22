@@ -11,286 +11,234 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-def unganisha_db():
+def conn():
     return db.engine.raw_connection()
 
+# ---------------- DATABASE INIT ----------------
 with app.app_context():
-    conn = unganisha_db()
-    cursor = conn.cursor()
+    c = conn()
+    cur = c.cursor()
 
-    cursor.execute('''
-    CREATE TABLE IF NOT EXISTS dwa (
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS dawa(
         id SERIAL PRIMARY KEY,
         jina TEXT,
         idadi INTEGER,
         bei INTEGER,
         tarehe TEXT
     )
-    ''')
+    """)
 
-    cursor.execute('''
-    CREATE TABLE IF NOT EXISTS mauzo (
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS mauzo(
         id SERIAL PRIMARY KEY,
         dawa_id INTEGER,
         idadi INTEGER,
         jumla INTEGER,
         tarehe TEXT
     )
-    ''')
+    """)
 
-    cursor.execute('''
-    CREATE TABLE IF NOT EXISTS watumiaji (
+    cur.execute("""
+    CREATE TABLE IF NOT EXISTS watumiaji(
         id SERIAL PRIMARY KEY,
         jina TEXT UNIQUE,
         nywila TEXT
     )
-    ''')
+    """)
 
-    cursor.execute("SELECT * FROM watumiaji WHERE jina=%s", ('admin',))
-    if not cursor.fetchone():
-        cursor.execute(
-            "INSERT INTO watumiaji (jina, nywila) VALUES (%s,%s)",
-            ('admin', 'admin123')
-        )
+    cur.execute("SELECT * FROM watumiaji WHERE jina=%s", ('admin',))
+    if not cur.fetchone():
+        cur.execute("INSERT INTO watumiaji (jina, nywila) VALUES (%s,%s)", ('admin','admin123'))
 
-    conn.commit()
-    cursor.close()
-    conn.close()
+    c.commit()
+    cur.close()
+    c.close()
 
-@app.route('/', methods=['GET', 'POST'])
+# ---------------- LOGIN ----------------
+@app.route('/', methods=['GET','POST'])
 def login():
-
     if request.method == 'POST':
-
         jina = request.form['jina']
         nywila = request.form['nywila']
 
-        conn = unganisha_db()
-        cursor = conn.cursor()
+        c = conn()
+        cur = c.cursor()
+        cur.execute("SELECT * FROM watumiaji WHERE jina=%s AND nywila=%s", (jina, nywila))
+        user = cur.fetchone()
+        cur.close()
+        c.close()
 
-        cursor.execute(
-            "SELECT * FROM watumiaji WHERE jina=%s AND nywila=%s",
-            (jina, nywila)
-        )
-
-        mtumiaji = cursor.fetchone()
-
-        cursor.close()
-        conn.close()
-
-        if mtumiaji:
-            session['mtumiaji'] = jina
+        if user:
+            session['user'] = jina
             return redirect(url_for('dashboard'))
-
-        flash("Username au password sio sahihi", "danger")
+        flash("Login failed", "danger")
 
     return render_template('login.html')
 
+# ---------------- DASHBOARD ----------------
 @app.route('/dashboard')
 def dashboard():
-
-    if 'mtumiaji' not in session:
+    if 'user' not in session:
         return redirect(url_for('login'))
 
     search = request.args.get('search')
 
-    conn = unganisha_db()
-    cursor = conn.cursor()
+    c = conn()
+    cur = c.cursor()
 
     if search:
-        cursor.execute(
-            "SELECT * FROM dwa WHERE LOWER(jina) LIKE LOWER(%s)",
-            ('%' + search + '%',)
-        )
+        cur.execute("SELECT * FROM dawa WHERE jina ILIKE %s", ('%'+search+'%',))
     else:
-        cursor.execute("SELECT * FROM dwa ORDER BY id DESC")
+        cur.execute("SELECT * FROM dawa ORDER BY id DESC")
 
-    dawa_zote = cursor.fetchall()
+    dawa = cur.fetchall()
 
-    cursor.execute("""
+    cur.execute("""
     SELECT m.id, d.jina, m.idadi, m.jumla, m.tarehe
     FROM mauzo m
-    JOIN dwa d ON m.dawa_id = d.id
+    JOIN dawa d ON d.id = m.dawa_id
     ORDER BY m.id DESC
     """)
 
-    mauzo_yote = cursor.fetchall()
+    mauzo = cur.fetchall()
 
-    cursor.close()
-    conn.close()
+    cur.close()
+    c.close()
 
-    return render_template(
-        'dashboard.html',
-        dwa=dawa_zote,
-        mauzo=mauzo_yote,
-        search_query=search
-    )
+    return render_template('dashboard.html', dawa=dawa, mauzo=mauzo, search=search)
 
+# ---------------- ADD MEDICINE ----------------
 @app.route('/ongeza_dawa', methods=['POST'])
 def ongeza_dawa():
-
-    if 'mtumiaji' not in session:
-        return redirect(url_for('login'))
-
     jina = request.form['jina']
     idadi = request.form['idadi']
     bei = request.form['bei']
     tarehe = request.form['tarehe']
 
-    conn = unganisha_db()
-    cursor = conn.cursor()
+    c = conn()
+    cur = c.cursor()
 
-    cursor.execute(
-        "INSERT INTO dwa (jina, idadi, bei, tarehe) VALUES (%s,%s,%s,%s)",
+    cur.execute(
+        "INSERT INTO dawa(jina,idadi,bei,tarehe) VALUES (%s,%s,%s,%s)",
         (jina, idadi, bei, tarehe)
     )
 
-    conn.commit()
+    c.commit()
+    cur.close()
+    c.close()
 
-    cursor.close()
-    conn.close()
-
-    flash("Medicine added successfully", "success")
-
+    flash("Medicine added", "success")
     return redirect(url_for('dashboard'))
 
+# ---------------- SELL ----------------
 @app.route('/uza_dawa', methods=['POST'])
 def uza_dawa():
-
     dawa_id = request.form['dawa_id']
-    idadi = int(request.form['idadi'])
+    qty = int(request.form['idadi'])
 
-    conn = unganisha_db()
-    cursor = conn.cursor()
+    c = conn()
+    cur = c.cursor()
 
-    cursor.execute(
-        "SELECT idadi, bei FROM dwa WHERE id=%s",
-        (dawa_id,)
-    )
+    cur.execute("SELECT idadi,bei FROM dawa WHERE id=%s", (dawa_id,))
+    d = cur.fetchone()
 
-    dawa = cursor.fetchone()
+    if d and d[0] >= qty:
+        left = d[0] - qty
+        total = d[1] * qty
 
-    if dawa and dawa[0] >= idadi:
+        cur.execute("UPDATE dawa SET idadi=%s WHERE id=%s", (left, dawa_id))
 
-        mpya = dawa[0] - idadi
-        jumla = dawa[1] * idadi
+        cur.execute("""
+        INSERT INTO mauzo(dawa_id,idadi,jumla,tarehe)
+        VALUES (%s,%s,%s,%s)
+        """, (dawa_id, qty, total, datetime.now().strftime("%Y-%m-%d %H:%M:%S")))
 
-        cursor.execute(
-            "UPDATE dwa SET idadi=%s WHERE id=%s",
-            (mpya, dawa_id)
-        )
-
-        cursor.execute(
-            "INSERT INTO mauzo (dawa_id,idadi,jumla,tarehe) VALUES (%s,%s,%s,%s)",
-            (
-                dawa_id,
-                idadi,
-                jumla,
-                datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            )
-        )
-
-        conn.commit()
-
-        flash("Sale completed", "success")
-
+        c.commit()
+        flash("Sale successful", "success")
     else:
-        flash("Stock haitoshi", "danger")
+        flash("Not enough stock", "danger")
 
-    cursor.close()
-    conn.close()
-
+    cur.close()
+    c.close()
     return redirect(url_for('dashboard'))
 
-@app.route('/edit/<int:id>', methods=['GET', 'POST'])
+# ---------------- EDIT ----------------
+@app.route('/edit/<int:id>', methods=['GET','POST'])
 def edit(id):
-
-    conn = unganisha_db()
-    cursor = conn.cursor()
+    c = conn()
+    cur = c.cursor()
 
     if request.method == 'POST':
-
         jina = request.form['jina']
         idadi = request.form['idadi']
         bei = request.form['bei']
         tarehe = request.form['tarehe']
 
-        cursor.execute("""
-        UPDATE dwa
-        SET jina=%s, idadi=%s, bei=%s, tarehe=%s
+        cur.execute("""
+        UPDATE dawa SET jina=%s,idadi=%s,bei=%s,tarehe=%s
         WHERE id=%s
         """, (jina, idadi, bei, tarehe, id))
 
-        conn.commit()
+        c.commit()
+        cur.close()
+        c.close()
 
-        cursor.close()
-        conn.close()
-
-        flash("Medicine updated", "success")
-
+        flash("Updated", "success")
         return redirect(url_for('dashboard'))
 
-    cursor.execute("SELECT * FROM dwa WHERE id=%s", (id,))
-    dawa = cursor.fetchone()
+    cur.execute("SELECT * FROM dawa WHERE id=%s", (id,))
+    dawa = cur.fetchone()
 
-    cursor.close()
-    conn.close()
+    cur.close()
+    c.close()
 
-    return render_template('edit.html', dawa=dawa)
+    return render_template("edit.html", dawa=dawa)
 
+# ---------------- DELETE ----------------
 @app.route('/futa/<int:id>')
 def futa(id):
+    c = conn()
+    cur = c.cursor()
 
-    conn = unganisha_db()
-    cursor = conn.cursor()
+    cur.execute("DELETE FROM dawa WHERE id=%s", (id,))
 
-    cursor.execute("DELETE FROM dwa WHERE id=%s", (id,))
+    c.commit()
+    cur.close()
+    c.close()
 
-    conn.commit()
-
-    cursor.close()
-    conn.close()
-
-    flash("Medicine deleted", "success")
-
+    flash("Deleted", "success")
     return redirect(url_for('dashboard'))
 
+# ---------------- REPORT ----------------
 @app.route('/report')
 def report():
+    c = conn()
+    cur = c.cursor()
 
-    conn = unganisha_db()
-    cursor = conn.cursor()
-
-    cursor.execute("""
+    cur.execute("""
     SELECT d.jina, m.idadi, m.jumla, m.tarehe
     FROM mauzo m
-    JOIN dwa d ON m.dawa_id=d.id
+    JOIN dawa d ON d.id=m.dawa_id
     ORDER BY m.id DESC
     """)
 
-    mauzo = cursor.fetchall()
+    mauzo = cur.fetchall()
 
-    cursor.execute("SELECT COALESCE(SUM(jumla),0) FROM mauzo")
-    jumla_kuu = cursor.fetchone()[0]
+    cur.execute("SELECT COALESCE(SUM(jumla),0) FROM mauzo")
+    jumla = cur.fetchone()[0]
 
-    cursor.close()
-    conn.close()
+    cur.close()
+    c.close()
 
-    return render_template(
-        'report.html',
-        mauzo=mauzo,
-        jumla_kuu=jumla_kuu
-    )
+    return render_template("report.html", mauzo=mauzo, jumla_kuu=jumla)
 
+# ---------------- LOGOUT ----------------
 @app.route('/logout')
 def logout():
-
-    session.pop('mtumiaji', None)
-
+    session.clear()
     return redirect(url_for('login'))
 
-if __name__ == '__main__':
-
-    port = int(os.environ.get("PORT", 5000))
-
-    app.run(host='0.0.0.0', port=port, debug=False)
+if __name__ == "__main__":
+    port = int(os.environ.get("PORT",5000))
+    app.run(host="0.0.0.0", port=port, debug=false)

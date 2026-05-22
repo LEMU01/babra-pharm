@@ -1,31 +1,8 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Edit Medicine</title>
-</head>
-<body>
-
-<div class="edit">
-
 <form method="POST">
+    <input name="jina" value="{{ dawa[1] }}">
+    <input name="idadi" value="{{ dawa[2] }}">
+    <input name="bei" value="{{ dawa[3] }}">
+    <input name="tarehe" value="{{ dawa[4] }}">
 
-<h2>EDIT MEDICINE</h2>
-
-<input type="text" name="jina" value="{{ dawa[1] }}" required>
-
-<input type="number" name="idadi" value="{{ dawa[2] }}" required>
-
-<input type="number" name="bei" value="{{ dawa[3] }}" required>
-
-<input type="date" name="tarehe" value="{{ dawa[4] }}" required>
-
-<button type="submit">Update</button>
-
-<a href="{{ url_for('dashboard') }}">Back</a>
-
+    <button>Update</button>
 </form>
-
-</div>
-
-</body>
-</html>
