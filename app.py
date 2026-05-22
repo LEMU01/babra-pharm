@@ -5,8 +5,8 @@ from datetime import datetime
 app = Flask(__name__)
 app.secret_key = "siri_nzito_sana"
 
-# 1. BANDIKA URI YAKO HALISI HAPA (Weka password yako ya Supabase hapo katikati)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres:Lemu1234#567@db.ltfzabxpwnxkuiwyomjv.supabase.co:5432/postgres'
+# Hapa nimeweka password yako mpya (Lemu1234#567) bila alama ya @ na bila mabano
+app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://postgres.ltfzabxpwnxkuiwyomjv:Lemu1234#567@aws-0-eu-west-1.pooler.supabase.com:6543/postgres'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -14,7 +14,7 @@ db = SQLAlchemy(app)
 def unganisha_db():
     return db.engine.raw_connection()
 
-# Kazi ya kutengeneza meza kwenye Supabase kiotomatiki zikiwa hazipo
+# Kutengeneza meza kwenye Supabase kiotomatiki zikiwa hazipo
 with app.app_context():
     conn = unganisha_db()
     cursor = conn.cursor()
@@ -35,7 +35,7 @@ with app.app_context():
                         jina TEXT UNIQUE, 
                         nywila TEXT)''')
     
-    # Kuongeza admin wa majaribio kama hayopo
+    # Kuongeza akaunti ya kwanza ya admin kama haipo
     cursor.execute("SELECT * FROM watumiaji WHERE jina = %s", ('admin',))
     if not cursor.fetchone():
         cursor.execute("INSERT INTO watumiaji (jina, nywila) VALUES (%s, %s)", ('admin', 'admin123'))
@@ -51,7 +51,6 @@ def login():
         
         conn = unganisha_db()
         cursor = conn.cursor()
-        # Tumebadilisha ? kuwa %s kwa ajili ya PostgreSQL
         cursor.execute("SELECT * FROM watumiaji WHERE jina = %s AND nywila = %s", (jina, nywila))
         mtumiaji = cursor.fetchone()
         cursor.close()
@@ -139,4 +138,4 @@ def logout():
     return redirect(url_for('login'))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=False)
